@@ -1,59 +1,74 @@
-'''
 @echo off
-cd/d "%~dp0"
-cls
 
-set PATH=%~dp0tools\GetGnuWin32\bin;%~dp0tools\swigwin-3.0.5;%~dp0tools\cmake-3.8.0-rc2-win64-x64\bin;%PATH%
+set LLVM_SVN_URL=http://llvm.org/svn/llvm-project/llvm/tags/RELEASE_701/final
+set CLANG_SVN_URL=http://llvm.org/svn/llvm-project/cfe/tags/RELEASE_701/final
+set LLDB_SVN_URL=http://llvm.org/svn/llvm-project/lldb/tags/RELEASE_701/final
+
+set CURRENT_PATH_ENV=%PATH%
+set PATH=%~dp0tools\GetGnuWin32\bin;%~dp0tools\swigwin-3.0.5;%~dp0tools\cmake-3.8.0-rc2-win64-x64\bin;%~dp0tools\svn\bin;%PATH%
+set LLVM_PATH=%~dp0llvm
 set LLVM=%~dp0llvm\llvm
 set LLDB=%~dp0llvm\lldb
 set CLANG=%~dp0llvm\clang
+set PYTHON3_PATH=C:\Python37
+
 set ARCH=amd64
 set BUILD=build_%ARCH%
 
-if %ARCH% == x86 (
-    set "VSTOOLS=%VS140COMNTOOLS%"
+if "%VS140COMNTOOLS%" == "" (
+	rem USE 2017 enviorement
+ 	set "VS150COMNTOOLS=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\"
+ 	set "VC_VARALL_SCRIPT=%VS150COMNTOOLS%..\..\VC\Auxiliary\Build\vcvarsall.bat"
 ) else (
-    set "VSTOOLS=%VS140COMNTOOLS%"
+	set "VSTOOLS=%VS140COMNTOOLS%"
+ 	set "VC_VARALL_SCRIPT=%VSTOOLS%..\..\VC\vcvarsall.bat"
 )
 
-rd "%LLVM%\tools\lldb" >NUL 2>NUL
-rd "%LLVM%\tools\clang" >NUL 2>NUL
-
-mklink /j "%LLVM%\tools\lldb" "%LLDB%"
-mklink /j "%LLVM%\tools\clang" "%CLANG%"
-
-IF NOT [%ERRORLEVEL%] == [0] (
-    echo mklink failed
-    pause
+rem Create LLVM path 
+if not exist "%LLVM_PATH%" (
+	mkdir "%LLVM_PATH%"
 )
 
-call "%VSTOOLS%..\..\VC\vcvarsall.bat" %ARCH%
+if not exist "%LLVM%" (
+	rem make SVN checkout
+	svn co %LLVM_SVN_URL% "%LLVM%"
+)
+
+if not exist "%LLDB%" (
+	rem make SVN checkout
+	svn co %LLDB_SVN_URL% "%LLDB%"
+)
+
+if not exist "%CLANG%" (
+	rem make SVN checkout
+	svn co %CLANG_SVN_URL% "%CLANG%"
+)
+
+
+if not exist "%LLVM%\tools\lldb" (
+	mklink /j "%LLVM%\tools\lldb" "%LLDB%"
+)
+
+if not exist "%LLVM%\tools\clang" (
+	mklink /j "%LLVM%\tools\clang" "%CLANG%"
+)
+
+call "%VC_VARALL_SCRIPT%" %ARCH%
 
 set INCLUDE=%INCLUDE%;%~dp0external
 
-mkdir %BUILD%
-cd %BUILD%
-
-if not exist build.ninja (
-    cmake -G Ninja "%~dp0llvm\llvm" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPYTHON_HOME=%~dp0Python36\%ARCH%\ -DPYTHON_EXECUTABLE=%~dp0Python36\%ARCH%\python.exe
-    call py "%~f0" "%~dp0%BUILD%\build.ninja"
+if not exist "%BUILD%" (
+	mkdir %BUILD%
 )
 
-rem echo.
-rem echo before run "ninja lldb", you may replace all "/INCREMENTAL" in build.ninja with "/OPT:REF"
-rem echo to reduce the binary size
-rem echo.
+pushd %BUILD%
 
-cmd/k
+if not exist build.ninja (
+   cmake -G Ninja "%~dp0llvm\llvm" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPYTHON_HOME=%PYTHON3_PATH%\ -DPYTHON_EXECUTABLE=%PYTHON3_PATH%\python.exe
+)
 
-rd "%LLVM%\tools\lldb" >NUL 2>NUL
-rd "%LLVM%\tools\clang" >NUL 2>NUL
+ninja -j4
 
-goto:eof
+set PATH=%CURRENT_PATH_ENV%
 
-'''
-
-if __name__ == '__main__':
-    import os, sys
-    b = open(sys.argv[1], 'rb').read().replace(b'/INCREMENTAL', b'/OPT:REF')
-    open(sys.argv[1], 'wb').write(b)
+popd

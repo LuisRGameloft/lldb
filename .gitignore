@@ -5,3 +5,4 @@ __pycache__/
 _lldb.pyd
 /Python36/amd64
 /build_*
+llvm/
