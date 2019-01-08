@@ -2,8 +2,8 @@
 
 #Get current worker folder
 CURRENT_DIR=`pwd`
-ANDROID_NDK_HOME=/home/whiso/android-ndk-r18b
-ARCH=arm
+ANDROID_NDK_HOME=
+ARCH=
 
 if [ -z "$ANDROID_NDK_HOME" ]; then
 	echo "You need add your current Android NDK Path "
