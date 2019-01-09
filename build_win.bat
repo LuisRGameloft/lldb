@@ -75,7 +75,7 @@ if not exist build.ninja (
 )
 
 if exist build.ninja (
-	ninja -j %NUMBER_OF_PROCESSORS%
+	ninja lldb -j %NUMBER_OF_PROCESSORS%
 )
 
 set PATH=%CURRENT_PATH_ENV%

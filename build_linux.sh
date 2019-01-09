@@ -103,6 +103,8 @@ fi
 #Get Number of threads
 NPROC=`nproc`
 
-ninja -j $NPROC
+if [ -f "$BUILD_PATH/build.ninja" ]; then
+	ninja lldb -j $NPROC
+fi
 
 cd $CURRENT_DIR 
