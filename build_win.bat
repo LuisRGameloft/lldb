@@ -10,15 +10,14 @@ set LLVM_PATH=%~dp0llvm
 set LLVM=%~dp0llvm\llvm
 set LLDB=%~dp0llvm\lldb
 set CLANG=%~dp0llvm\clang
-set PYTHON3_PATH=
 set PYTHON_HOME=%PYTHON3_PATH%
 
 if "%PYTHON3_PATH%"=="" (
-	echo you need to add Python 3 path 
+	echo you need to add Python 3 path in config_win.bat -- take config_win.template as base --
 	goto eof
 )
 
-set ARCH=amd64
+set ARCH=%1
 set BUILD=build_%ARCH%
 
 SetLocal EnableDelayedExpansion

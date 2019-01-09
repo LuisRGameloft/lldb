@@ -1,0 +1,4 @@
+#!/bin/bash
+
+#Get current NDK Android folder
+ANDROID_NDK_HOME=
