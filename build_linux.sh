@@ -22,24 +22,24 @@ if [ -z "$ARCH" ]; then
 	exit 1
 fi
 
-if [ "$ARCH" = "arm64" ]; then
+if [ "$ARCH" = "aarch64" ]; then
 	_ANDROID_ABI=arm64-v8a
-	_HOST_TRIPLE=aarch64-unknown-linux-android
+	_HOST_TRIPLE=aarch64
 fi
 
-if [ "$ARCH" = "armv7" ]; then
+if [ "$ARCH" = "arm" ]; then
 	_ANDROID_ABI=armeabi-v7a
-	_HOST_TRIPLE=arm-unknown-linux-android
+	_HOST_TRIPLE=arm
 fi
 
 if [ "$ARCH" = "x86" ]; then
 	_ANDROID_ABI=x86
-	_HOST_TRIPLE=i686-unknown-linux-android
+	_HOST_TRIPLE=i386
 fi
 
-if [ "$ARCH" = "x64" ]; then
+if [ "$ARCH" = "x86_64" ]; then
 	_ANDROID_ABI=x86_64
-	_HOST_TRIPLE=x86_64-unknown-linux-android
+	_HOST_TRIPLE=x86_64
 fi
 
 
@@ -97,14 +97,14 @@ fi
 cd $BUILD_PATH
 
 if [ ! -f "$BUILD_PATH/build.ninja" ]; then
-	cmake -G Ninja $LLVM -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=$_ANDROID_ABI -DANDROID_PLATFORM=android-21 -DANDROID_ALLOW_UNDEFINED_SYMBOLS=On -DLLVM_HOST_TRIPLE=$_HOST_TRIPLE -DCROSS_TOOLCHAIN_FLAGS_NATIVE='-DCMAKE_C_COMPILER=cc;-DCMAKE_CXX_COMPILER=c++' 
+	cmake -G Ninja $LLVM -DCMAKE_BUILD_TYPE=MinSizeRel -Wno-dev -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=$_ANDROID_ABI -DANDROID_PLATFORM=android-21 -DLLVM_HOST_TRIPLE=$_HOST_TRIPLE-unknown-linux-android -DCMAKE_C_FLAGS="-s" -DCMAKE_CXX_FLAGS="-s"
 fi
 
 #Get Number of threads
 NPROC=`nproc`
 
 if [ -f "$BUILD_PATH/build.ninja" ]; then
-	ninja lldb -j $NPROC
+	ninja lldb-server -j $NPROC
 fi
 
 cd $CURRENT_DIR 

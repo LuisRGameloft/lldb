@@ -2,4 +2,4 @@
 #Get current worker folder
 CURRENT_WORKING_DIR=`pwd`
 
-source $CURRENT_WORKING_DIR/build_linux.sh armv7
+source $CURRENT_WORKING_DIR/build_linux.sh x86_64

@@ -71,11 +71,11 @@ if not exist "%BUILD%" (
 pushd %BUILD%
 
 if not exist build.ninja (
-   cmake -G Ninja "%~dp0llvm\llvm" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPYTHON_HOME=%PYTHON3_PATH%\ -DPYTHON_EXECUTABLE=%PYTHON3_PATH%\python.exe
+   cmake -G Ninja "%~dp0llvm\llvm" -DCMAKE_BUILD_TYPE=Release -DPYTHON_HOME=%PYTHON3_PATH%\ -DPYTHON_EXECUTABLE=%PYTHON3_PATH%\python.exe -DLLVM_TARGETS_TO_BUILD="X86;ARM;AArch64" -DLLDB_RELOCATABLE_PYTHON=1 -DSWIG_DIR=%~dp0tools\swigwin-3.0.5 -DSWIG_EXECUTABLE=%~dp0tools\swigwin-3.0.5\swig.exe
 )
 
 if exist build.ninja (
-	ninja lldb -j %NUMBER_OF_PROCESSORS%
+	ninja lldb finish_swig -j %NUMBER_OF_PROCESSORS%
 )
 
 set PATH=%CURRENT_PATH_ENV%
