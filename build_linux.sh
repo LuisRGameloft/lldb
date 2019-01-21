@@ -46,9 +46,9 @@ fi
 BUILD_PATH=$CURRENT_DIR/build_$ARCH
 
 #LLVM Svn urls
-LLVM_SVN_URL=https://llvm.org/svn/llvm-project/llvm/tags/RELEASE_701/final
-CLANG_SVN_URL=https://llvm.org/svn/llvm-project/cfe/tags/RELEASE_701/final
-LLDB_SVN_URL=https://llvm.org/svn/llvm-project/lldb/tags/RELEASE_701/final
+LLVM_SVN_URL=https://llvm.org/svn/llvm-project/llvm/tags/RELEASE_600/final
+CLANG_SVN_URL=https://llvm.org/svn/llvm-project/cfe/tags/RELEASE_600/final
+LLDB_SVN_URL=https://llvm.org/svn/llvm-project/lldb/tags/RELEASE_600/final
 
 #LLVM Working path
 LLVM_PATH=$CURRENT_DIR/llvm

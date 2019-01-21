@@ -1,8 +1,8 @@
 @echo off
 
-set LLVM_SVN_URL=https://llvm.org/svn/llvm-project/llvm/tags/RELEASE_701/final
-set CLANG_SVN_URL=https://llvm.org/svn/llvm-project/cfe/tags/RELEASE_701/final
-set LLDB_SVN_URL=https://llvm.org/svn/llvm-project/lldb/tags/RELEASE_701/final
+set LLVM_SVN_URL=https://llvm.org/svn/llvm-project/llvm/tags/RELEASE_600/final
+set CLANG_SVN_URL=https://llvm.org/svn/llvm-project/cfe/tags/RELEASE_600/final
+set LLDB_SVN_URL=https://llvm.org/svn/llvm-project/lldb/tags/RELEASE_600/final
 
 set CURRENT_PATH_ENV=%PATH%
 set PATH=%~dp0tools\GetGnuWin32\bin;%~dp0tools\swigwin-3.0.5;%~dp0tools\cmake-3.8.0-rc2-win64-x64\bin;%~dp0tools\svn\bin;%PATH%
@@ -10,10 +10,10 @@ set LLVM_PATH=%~dp0llvm
 set LLVM=%~dp0llvm\llvm
 set LLDB=%~dp0llvm\lldb
 set CLANG=%~dp0llvm\clang
-set PYTHON_HOME=%PYTHON3_PATH%
+set PYTHON_HOME=%PYTHON_PATH%
 
-if "%PYTHON3_PATH%"=="" (
-	echo you need to add Python 3 path in config_win.bat -- take config_win.template as base --
+if "%PYTHON_PATH%"=="" (
+	echo you need to add Python path in config_win.bat -- take config_win.template as base --
 	goto eof
 )
 
@@ -71,7 +71,7 @@ if not exist "%BUILD%" (
 pushd %BUILD%
 
 if not exist build.ninja (
-   cmake -G Ninja "%~dp0llvm\llvm" -DCMAKE_BUILD_TYPE=Release -DPYTHON_HOME=%PYTHON3_PATH%\ -DPYTHON_EXECUTABLE=%PYTHON3_PATH%\python.exe -DLLVM_TARGETS_TO_BUILD="X86;ARM;AArch64" -DLLDB_RELOCATABLE_PYTHON=1 -DSWIG_DIR=%~dp0tools\swigwin-3.0.5 -DSWIG_EXECUTABLE=%~dp0tools\swigwin-3.0.5\swig.exe
+   cmake -G Ninja "%~dp0llvm\llvm" -DCMAKE_BUILD_TYPE=Release -DPYTHON_HOME=%PYTHON_PATH%\ -DPYTHON_EXECUTABLE=%PYTHON_PATH%\python.exe -DLLVM_TARGETS_TO_BUILD="X86;ARM;AArch64" -DLLDB_RELOCATABLE_PYTHON=1 -DSWIG_DIR=%~dp0tools\swigwin-3.0.5 -DSWIG_EXECUTABLE=%~dp0tools\swigwin-3.0.5\swig.exe
 )
 
 if exist build.ninja (
